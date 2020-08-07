@@ -48,11 +48,11 @@
 
 样式是对着B站[这个教程](https://www.bilibili.com/video/BV1nE411r7TF) 然后使用Bootstrap来进行制作的
 
-![1](F:\cache\notepictures\1.png)
+![1](https://github.com/VMJWV/myblog2/blob/master/pictures/1.png)
 
-![2](F:\cache\notepictures\2-1596824509190.png)
+![2](https://github.com/VMJWV/myblog2/blob/master/pictures/2.png)
 
-![](F:\cache\notepictures\3.png)
+![3](https://github.com/VMJWV/myblog2/blob/master/pictures/3.png)
 
 象征性贴几张 网站已经部署 具体样式可以前往查看
 

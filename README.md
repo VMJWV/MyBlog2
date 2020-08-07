@@ -3,7 +3,9 @@
 
 于是重构了一个版本 从结果上来看这次更新的结果要比上一次好很多 但是做完也有点四不像 ajax的走ajax 模板渲染的走模板渲染
 
-现在看来最好的构建方式还是该使用Vue来做的
+现在看来最好的构建方式还是该使用Vue来做的  
+
+这次更新过后 博客变得**更快 更好看了 可提供的操作也更多了**
 
 
 
@@ -23,7 +25,7 @@
 ## 前端
 
 1. bootstrap + jquery 
-2. 代码高亮 [prism](https://github.com/PrismJS/prism) highlight js 其实也能够 但是highlight js的
+2. 代码高亮 [prism](https://github.com/PrismJS/prism) highlight js 其实也能够 但是highlight js的移动端展示实在让人难过
 3. markdown编辑器 [editormd  ](https://pandao.github.io/editor.md/) 
 4. 目录生成 katelog(https://github.com/KELEN/katelog) 
 5. 标签颜色选择 [Bootstrap Colorpicker](https://github.com/itsjavi/bootstrap-colorpicker)
@@ -48,11 +50,11 @@
 
 样式是对着B站[这个教程](https://www.bilibili.com/video/BV1nE411r7TF) 然后使用Bootstrap来进行制作的
 
-![1](F:\cache\notepictures\1.png)
+![1](https://github.com/VMJWV/myblog2/blob/master/pictures/1.png)
 
-![2](F:\cache\notepictures\2-1596824509190.png)
+![2](https://github.com/VMJWV/myblog2/blob/master/pictures/2.png)
 
-![](F:\cache\notepictures\3.png)
+![3](https://github.com/VMJWV/myblog2/blob/master/pictures/3.png)
 
 象征性贴几张 网站已经部署 具体样式可以前往查看
 

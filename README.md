@@ -69,6 +69,15 @@
 5. 只进行了简单测试 不排除还存在Bug
 6. 不知道是啥了 反正技术菜 啥都是缺点
 
+# 部署
+安装好mysql redis 初始化好数据库 上传jar包 输入下面的命令即可部署
+
+**默认已经插入了一个 账户名为 admin 邮箱为 admin@qq.com 密码为abc123的管理员账户**
+
+```shell
+nohup java -jar blog-0.0.1-SNAPSHOT.jar --spring.profiles.active=pro > info.log 2>&1 &
+```
+
 ## 总结
 
 加油导包 做一个导包最快的CRUD仔

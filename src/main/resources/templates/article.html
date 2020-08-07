@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${article.title}"></title>
+    <script src="../static/js/jquery/2.0.0/jquery.min.js" th:src="@{/js/jquery/2.0.0/jquery.min.js}"></script>
+    <link href="../static/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet"
+          th:href="@{/css/bootstrap/3.3.6/bootstrap.min.css}">
+    <script src="../static/js/bootstrap/3.3.6/bootstrap.min.js"
+            th:src="@{/js/bootstrap/3.3.6/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+    <link rel="stylesheet" href="../static/css/typo.css" th:href="@{/css/typo.css}">
+    <link rel="stylesheet" href="../static/prism/prism.css" th:href="@{/prism/prism.css}">
+    <script th:src="@{/prism/prism.js}"></script>
+    <script th:src="@{/js/qrcode.min.js}"></script>
+    <script th:src="@{/js/katelog.min.js}"></script>
+</head>
+
+<body>
+<nav th:replace="component::top-nav(-1)"></nav>
+<div class="k-catelog-list" id="catelogList"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+            <!-- 中间的大面板开始 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <div style="font-size: 1.5rem">
+                            <span class="glyphicon glyphicon-open" style="color: darkslategray"></span>
+                            <span th:text="${article.writer}"></span>
+                            <span class="glyphicon glyphicon-calendar" style="color: royalblue"></span>
+                            <span class="margin_right"
+                                  th:text="${#dates.format(article.createTime, 'yyyy-MM-dd HH:mm:ss')}"
+                            ></span>
+                            <span class="glyphicon glyphicon-fire" style="color: orangered"></span>
+                            <span class="margin_right" th:text="${viewCount}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-xs-12" style="border-bottom:1px solid gray;padding-bottom:10px">
+                        <img th:src="${article.pictureUrl}"
+                             class="img-responsive center-block">
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div id="myLabel" th:text="${article.type}">
+
+                        </div>
+                        <!-- 文章信息开始 -->
+                        <div class="typo typo-selection text-center">
+                            <h1 th:text="${article.title}"></h1>
+                        </div>
+                        <!-- 文章信息结束 -->
+                        <!-- 文章内容区域开始 -->
+                        <div id="wrapper" class="typo typo-selection js-toc-content" th:utext="${article.content}">
+
+                        </div>
+                        <!-- 文章内容区域结束 -->
+                        <div class="article_labels">
+                            <span th:each="label : ${article.labels}">
+                            <span class="label" th:text="${label.labelName}"
+                                  th:style="'background:'+${label.labelColor}+';margin:5px'">
+                            </span>
+                                </span>
+                        </div>
+                    </div>
+
+                    <!-- 博客版权信息开始 -->
+                    <div class="col-xs-12" id="writer">
+                        <div class="col-xs-12 col-md-6" id="writer_info">
+                            <ul>
+                                <li th:text="'作者:'+${article.writer}"></li>
+                                <li>发表时间:2020-7-24 15:50:55</li>
+                                <li>版权声明：自由转载-非商用-非衍生-保持署名</li>
+                                <li>公众号转载：添加作者link即可</li>
+                                <li>网站做的不错?扫码给作者喂食吧</li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-5 col-md-3 col-xs-offset-1 col-md-offset-0">
+                            <img src="../static/images/QRcode1.png" class="img-responsive img-rounded img_margin"
+                                 th:src="@{/images/QRcode1.png}">
+                        </div>
+                        <div class="col-xs-5 col-md-3">
+                            <img src="../static/images/QRcode2.png" class="img-responsive img-rounded img_margin"
+                                 th:src="@{/images/QRcode2.png}">
+                        </div>
+                    </div>
+                    <!-- 博客版权信息结束 -->
+                </div>
+            </div>
+            <!-- 中间的大面板结束 -->
+            <!--右边的工具栏-->
+            <div class="right-bar">
+                <div class="text-center right-button" id="catelog">
+                    目录
+                </div>
+                <div class="text-center right-button">
+                    <a href="#comment-title" class="un" id="tocomment">留言</a>
+                </div>
+                <div class="right-div hidden-xs" id="wechatQR">
+                    <img src="" th:src="@{/images/wechat.svg}" class="center-block right-image">
+                </div>
+                <div class="right-div">
+                    <img src="" th:src="@{/images/up.svg}" class="center-block right-image"
+                         onclick="scrollToTop()">
+                </div>
+            </div>
+            <div id="article-QRCode">
+                扫码微信观看
+                <div id="qrcode" style="width:120px; height:120px;"></div>
+            </div>
+            <!--            右边的工具栏结束-->
+            <!-- 留言板 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" id="comment-title">留言区</h3>
+                </div>
+                <!-- 留言板内容区 -->
+                <div class="panel-body">
+                    <div class="col-xs-12">
+                        <h4 th:if="${comments.size() == 0}">这篇文章还没有任何留言哦</h4>
+                        <!-- ul列表展示留言 -->
+                        <ul style="padding-left:0;list-style:none" id="commentBox">
+                            <li th:each="comment : ${comments}">
+                                <div class="col-xs-12 comment">
+                                    <img th:src="${comment.avatarUrl == null ? '/images/default-avatar.svg' : comment.avatarUrl}"
+                                         class="avatar" th:if="${comment.userId == null}">
+                                    <img th:src="${comment.avatarUrl == null ? '/images/default-avatar.svg' : comment.avatarUrl}"
+                                         class="avatar" th:if="${comment.userId != null}" th:onclick="'window.location.href=\'/profile/'+ ${comment.userId} + '\''">
+                                    <div class="col-xs-10 col-md-11">
+                                            <span>
+                                                <b th:text="${comment.nickname}+':'"></b>
+                                                <span class="break-word" th:text="${comment.content}"></span>
+                                            </span>
+                                        <br>
+                                        <span class="color_gray">
+                                                <span class="glyphicon glyphicon-time small_icon comment_icon"></span>
+                                                <span th:text="${#dates.format(comment.leftTime, 'yyyy-MM-dd HH:mm')}"
+                                                      class="time_font"></span><br>
+                                                <span class="comment_icon" onclick="reply(this)"
+                                                      th:attr="parentId=${comment.id},name=${comment.nickname}">
+                                                    <span class="glyphicon glyphicon-comment small_icon"></span>
+                                                    <span>回复</span>
+                                                </span>
+                                                <span class="show_comments" th:attr="boxId=${comment.id}"
+                                                      onclick="commentsSwitch(this)"
+                                                      th:if="${comment.sonComments.size()}">
+                                                    <span class="glyphicon glyphicon-comment small_icon"></span>
+                                                    <span>查看回复(<span
+                                                            th:text="${comment.sonComments.size()}"></span>)</span>
+                                                </span>
+                                            </span>
+                                    </div>
+                                </div>
+                                <!-- 这个是楼中楼 -->
+                                <ul id="comments1" style="list-style: none;display: none"
+                                    th:if="${comment.sonComments.size()}" th:id="'box'+${comment.id}">
+                                    <li th:each="sonComment : ${comment.sonComments}">
+                                        <div class="col-xs-12 comment-item">
+                                            <img th:src="${sonComment.avatarUrl == null ? '/images/default-avatar.svg' : sonComment.avatarUrl}"
+                                                 class="avatar" th:if="${sonComment.userId == null}">
+                                            <img th:src="${sonComment.avatarUrl == null ? '/images/default-avatar.svg' : sonComment.avatarUrl}"
+                                                 class="avatar" th:if="${sonComment.userId != null}" th:onclick="'javascript:window.location.href=/infocenter/'+ ${sonComment.userId}">
+                                            <div class="col-xs-9 col-md-11 ">
+                                                    <span>
+                                                        <b th:text="${sonComment.nickname}+':'"></b>
+                                                        <span class="color_reply">回复 <b
+                                                                th:text="${sonComment.replyName}+':'"></b></span>
+                                                        <span class="break-word"
+                                                              th:text="${sonComment.content}"></span>
+                                                    </span>
+                                                <br>
+                                                <span class="color_gray">
+                                                        <span class="glyphicon glyphicon-time small_icon comment_icon"></span>
+                                                <span th:text="${#dates.format(comment.leftTime, 'yyyy-MM-dd HH:mm')}"
+                                                      class="time_font"></span><br>
+                                                        <span class="comment_icon" onclick="reply(this)"
+                                                              th:attr="parentId=${comment.id},name=${sonComment.nickname}">
+                                                            <span class="glyphicon glyphicon-comment small_icon"></span>
+                                                            <span>回复</span>
+                                                        </span>
+                                                    </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <!-- 楼中楼区域结束 -->
+                            </li>
+                        </ul>
+                        <!-- ul列表展示留言结束 -->
+                        <!-- 留言板的分页 -->
+                        <div class="text-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled' : ''">
+
+                                        <a aria-label="Previous" th:if="${pageInfo.hasPreviousPage}"
+                                           th:href="@{/article/{id}(id=${article.id},pageNum=${pageInfo.prePage})}">
+                                            <span aria-hidden="true">«</span>
+                                        </a>
+                                        <a aria-label="Previous" th:if="${!pageInfo.hasPreviousPage}"
+                                           href="javascript:void(0);">
+                                            <span aria-hidden="true">«</span>
+                                        </a>
+                                    </li>
+                                    <li th:each="num : ${pageInfo.getNavigatepageNums()}"  th:classappend="${num == pageInfo.pageNum ? 'active' : ''}">
+                                        <a href="#" th:text="${num}"
+                                           th:href="@{/article/{id}(id=${article.id},pageNum=${num})}"></a>
+                                    </li>
+                                    <li th:classappend="${!pageInfo.hasNextPage} ? 'disabled' : ''">
+                                        <a aria-label="Next" th:if="${pageInfo.hasNextPage}"
+                                           th:href="@{/article/{id}(id=${article.id},pageNum=${pageInfo.nextPage})}">
+                                            <span aria-hidden="true">»</span>
+                                        </a>
+                                        <a aria-label="Next" th:if="${!pageInfo.hasNextPage}"
+                                           href="javascript:void(0);">
+                                            <span aria-hidden="true">»</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- 留言板分页到此结束 -->
+                    </div>
+                    <div class="col-xs-12">
+                        <form method="post" action="/comment/add" id="comment">
+                            <input type="hidden" name="articleId" th:value="${article.id}">
+                            <input type="hidden" name="parentId" id="parentId">
+                            <input type="hidden" name="replyName" id="replyName">
+                            <input type="hidden" name="pageNum" th:value="${pageInfo.pageNum}">
+                            <div class="col-xs-12">
+                                <textarea class="form-control" style="resize: none;height: 200px;"
+                                          id="content" placeholder="来说点什么吧" name="content"></textarea>
+                            </div>
+                            <div th:if="${profile == null}">
+                                <div class="col-xs-12 col-md-6" style="margin-top: 10px;">
+                                    <input type="text" class="form-control" placeholder="留下一个昵称吧" name="nickname">
+                                </div>
+                                <div class="col-xs-12 col-md-6" style="margin-top:10px">
+                                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                        <div class="btn-group" role="group">
+                                            <button type="submit" class="btn btn-info">发表评论</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${profile != null}">
+                                <input type="hidden" class="form-control" name="nickname" th:value="${profile.nickname}">
+                                <div class="col-xs-12 col-md-12" style="margin-top:10px">
+                                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                        <div class="btn-group" role="group">
+                                            <button type="submit" class="btn btn-info">发表评论</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- 留言板的内容区结束 -->
+            </div>
+            <!-- 留言板结束 -->
+        </div>
+    </div>
+</div>
+<footer th:replace="component::footer"></footer>
+<script src="../static/js/article.js" th:src="@{/js/article.js}"></script>
+</body>
+
+</html>

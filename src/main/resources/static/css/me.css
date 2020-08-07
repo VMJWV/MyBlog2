@@ -1,0 +1,288 @@
+.mid_icon {
+    font-size: 18px;
+}
+
+.mid1_icon {
+    font-size: 14px;
+}
+
+
+.margin_right {
+    margin-right: 5px;
+}
+
+.article_info {
+    font-size: 15px;
+}
+
+.article_others {
+    font-size: 13px;
+    /* color: gray; */
+}
+
+
+
+.writer {
+    color: royalblue;
+    font-weight: bold;
+}
+
+.article {
+    border-bottom: 1px solid #DFD1D1;
+    margin-bottom: 15px;
+}
+
+
+.right_label {
+    position: absolute;
+    right: 10%;
+}
+
+.right {
+    text-align: right;
+}
+
+.border {
+    border: 1px solid #dfdfdf;
+}
+
+.color1 {
+    background: royalblue;
+}
+
+.color_blue {
+    color: #3073AD;
+}
+
+
+.color2 {
+    background: orange;
+}
+
+.right_pannel {
+    color: gray;
+}
+
+body {
+    padding-top: 70px;
+    background: rgb(164,205,224);
+    background: linear-gradient(90deg, rgba(164,205,224,1) 0%, rgba(30,214,178,0.6702031154258579) 50%, rgba(245,234,168,0.9391106784510679) 100%);
+}
+
+.small_icon {
+    font-size: 12px !important;
+}
+
+#copyright {
+    margin-top: 10px;
+    text-align: center;
+    padding-top: 15px;
+    border-top: 1px solid gray;
+}
+
+#footer {
+    background-color: #222222;
+    color: white;
+}
+
+.color_aqua {
+    color: aqua;
+}
+
+.break-word {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.article_labels {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.article:hover{
+    background: #F5F5F5;
+}
+
+.article_labels span{
+    margin-right: 5px;
+    margin-bottom: 4px;
+}
+
+#myLabel {
+    position: absolute;
+    right: 5%;
+    top: 5px;
+    color: #F2711C;
+    border: 1px solid #F2711C;
+    padding: 3px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#writer {
+    background: #FCFFF5;
+    color: #A3C293;
+    margin-top: 20px;
+    box-shadow: 0 0 0 1px #A3C293 inset, 0 0 0 0 transparent;
+}
+
+#writer_info {
+    margin-top: 45px;
+}
+
+.img_margin {
+    margin: 10px;
+}
+
+.comment {
+    margin-top: 10px;
+    box-shadow: 1px 1px 1px rgba(34, 36, 38, .15);
+    padding-bottom: 10px;
+}
+
+.avatar {
+    height: 40px;
+    width: 40px;
+    float: left;
+    border-radius: 50%;
+}
+
+.color_reply {
+    color: #00B5AD;
+}
+
+.comment_icon {
+    margin-left: 5px;
+}
+
+.comment_icon:hover {
+    color: #00B5AD;
+    margin-left: 10px;
+}
+
+.comment-item {
+    box-shadow: 1px 1px 1px rgba(34, 36, 38, .15);
+    padding-bottom: 10px;
+    padding-top: 20px;
+    margin-bottom: 10px;
+}
+
+.show_comments {
+    margin-left: 5px;
+}
+
+.show_comments:hover {
+    margin-left: 10px;
+    color: royalblue;
+}
+
+.color_gray {
+    color: gray;
+}
+
+.time_font {
+    font-size: 12px;
+}
+
+#my-qrcode {
+    width: 120px;
+    height: 120px
+}
+
+
+.right-button {
+    background: #00A1D6;
+    height: 35px;
+    color: white;
+    line-height: 35px;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid white
+}
+
+.right-image {
+    height: 30px;
+    padding-top: 5px;
+    !important;
+}
+
+.right-div {
+    height: 35px;
+    background: whitesmoke;
+}
+
+.right-bar {
+    position: fixed;
+    width: 55px;
+    right: 15px;
+    top: 65%;
+    z-index: 2000;
+    !important;
+}
+
+#article-QRCode{
+    position: fixed;
+    right: 80px;
+    top:65%;
+    text-align: center;
+    background: white;
+    box-shadow: 2px 2px 2px #888888;
+    width: 120px;
+    z-index: 2000;
+    display: none;
+}
+
+.un,.un:link,.un:visited,.un:hover,.un:active{
+    text-decoration: none;
+    color: white;
+}
+
+.k-catelog-link:hover{
+    color: white;
+    background: royalblue;
+    font-weight: bold;
+}
+
+.k-catelog-link-active{
+    color: white;
+    background: blueviolet;
+    font-weight: bold;
+}
+
+#catelogList{
+    position: fixed;
+    right: 75px;
+    width: 200px;
+    height: 400px;
+    top: 120px;
+    padding: 6px;
+    overflow-y: auto;
+    box-shadow: 5px 5px 5px #888888;
+    border-radius: 20px;
+    background: white;
+    z-index: 1000;
+    display: none;
+}
+
+#catelogList::-webkit-scrollbar{
+    display: none;
+}
+
+#catelogList ul{
+    margin: 0;
+    list-style: none;
+    padding-left: 10px;
+}
+
+#catelogList li{
+    margin-top: 3px;
+}
+
+.margin_5{
+    margin: 5px;
+}
+
+.big{
+    height: 200px;
+}

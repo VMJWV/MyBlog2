@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户权限管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi">
+    <script src="https://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"
+            th:src="@{/js/jquery/2.0.0/jquery.min.js}"></script>
+    <link href="https://how2j.cn/study/css/bootstrap/3.3.6/bootstrap.min.css"
+          th:href="@{/css/bootstrap/3.3.6/bootstrap.min.css}" rel="stylesheet">
+    <script src="https://how2j.cn/study/js/bootstrap/3.3.6/bootstrap.min.js"
+            th:href="@{/js/bootstrap/3.3.6/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<nav th:replace="component :: admin-nav(4)"></nav>
+<div class="container">
+    <div class="col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="font-size: 20px;font-weight: bold;">用户权限管理</div>
+            <div class="panel-body">
+                <table class="table table-striped table-hover break-word"
+                       style="height: 200px" id="table">
+                    <tr>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>权限管理</th>
+                        <th>管理用户资料</th>
+                        <th>登录信息管理</th>
+                        <th>删除用户</th>
+                    </tr>
+                    <tr th:each="profile :${profiles}" th:classappend="${currentId == profile.id ? 'success' : ''}">
+                        <td th:text="${profile.id}"></td>
+                        <td th:text="${profile.nickname}"></td>
+                        <td th:text="${profile.email == null ? '未绑定邮箱' : profile.email}"></td>
+                        <td th:if="${currentId != profile.id}">
+                            <button class="btn btn-primary" onclick="showPermissionModel(this)"
+                                    th:attr="profile-id=${profile.id}">调整权限
+                            </button>
+                        </td>
+                        <td th:if="${currentId == profile.id}"><a class="btn btn-default"
+                                                                  href="javascript:alert('你是管理员 不要修改自己')">调整权限</a></td>
+                        <td><a class="btn btn-info" th:href="@{/admin/profile/edit(userId=${profile.id})}">调整资料</a></td>
+                        <td th:if="${profile.email != null}"><a class="btn btn-success" th:href="@{/admin/localauth/query(userId = ${profile.id})}">调整登录信息</a></td>
+                        <td th:if="${profile.email == null}"><a class="btn btn-success" th:href="@{/admin/localauth/new(userId = ${profile.id})}">新增登录信息</a></td>
+                        <td><a class="btn btn-danger" th:href="@{/admin/profile/delete(userId=${profile.id})}">删除此用户</a></td>
+                    </tr>
+                </table>
+                <nav class="text-center">
+                    <ul class="pagination">
+                        <li th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled' : ''">
+
+                            <a aria-label="Previous" th:if="${pageInfo.hasPreviousPage}"
+                               th:href="@{/admin/profile/query(pageNum=${pageInfo.prePage})}" >
+                                <span aria-hidden="true">«</span>
+                            </a>
+                            <a aria-label="Previous" th:if="${!pageInfo.hasPreviousPage}" href="javascript:void(0);">
+                                <span aria-hidden="true">«</span>
+                            </a>
+                        </li>
+                        <li th:each="num : ${pageInfo.getNavigatepageNums()}" th:classappend="${num == pageInfo.pageNum ? 'active' : ''}">
+                            <a href="#" th:text="${num}" th:href="@{/admin/profile/query(pageNum=${num})}"></a>
+                        </li>
+                        <li th:classappend="${!pageInfo.hasNextPage} ? 'disabled' : ''">
+                            <a aria-label="Next" th:if="${pageInfo.hasNextPage}"
+                               th:href="@{/admin/profile/query(pageNum=${pageInfo.nextPage})}">
+                                <span aria-hidden="true">»</span>
+                            </a>
+                            <a aria-label="Next" th:if="${!pageInfo.hasNextPage}" href="javascript:void(0);">
+                                <span aria-hidden="true">»</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="permission" tabindex="-1" role="dialog" aria-labelledby="permission" style="z-index:3000">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">选择权限</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>manage为管理员 拥有所有的权限</p>
+                <input type='hidden' name='userId' id="userId">
+                <input name="permission" value="1" id="query" type="checkbox"><span style="margin: 5px;font-size: 20px">query</span>
+                <input name="permission" value="2" id="update" type="checkbox"><span
+                    style="margin: 5px;font-size: 20px">update</span>
+                <input name="permission" value="3" id="delete" type="checkbox"><span
+                    style="margin: 5px;font-size: 20px">delete</span>
+                <input name="permission" value="4" id="add" type="checkbox"><span style="margin: 5px;font-size: 20px">add</span>
+                <input name="permission" value="5" id="manage" type="checkbox"><span
+                    style="margin: 5px;font-size: 20px">manage</span>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                <button class="btn btn-primary" type="button" onclick="changePermission()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="component::addLabel"></div>
+<footer th:replace="component :: footer"></footer>
+<script>
+    function showPermissionModel(val) {
+        $.ajax({
+            type: "post",
+            url: "/admin/profile/permissions",
+            data: {
+                "userId": $(val).attr("profile-id")
+            },
+            success: function (data) {
+                var array = data.toString().split(",");
+                $.each($('input:checkbox:checked'), function () {
+                    $(this).prop("checked",false);
+                });
+                $("#userId").val($(val).attr("profile-id"));
+                console.log(array);
+                for (let i of array) {
+                    $("#" + i).prop("checked", true);
+                }
+                $("#permission").modal('show');
+            },
+            error: function () {
+                alert("网络连接失败")
+            }
+        });
+    }
+
+    function changePermission() {
+        var permsStr = "";
+        $.each($('input:checkbox:checked'), function () {
+            permsStr += $(this).val() + ",";
+        });
+        $.ajax({
+            type: "post",
+            url: "/admin/permission/update",
+            data:{
+                "userId" : $("#userId").val(),
+                "permsStr" :permsStr
+            },
+            success :function(data){
+                if(data.code == 200){
+                    alert("权限修改成功");
+                    $("#permission").modal("hide");
+                }
+                else{
+                    alert("权限修改失败");
+                }
+            },
+            error: function(){
+                alert("权限修改失败");
+            }
+        });
+    }
+</script>
+</body>
+</html>

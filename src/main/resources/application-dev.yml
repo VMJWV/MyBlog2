@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username: root
+    password: root
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+
+logging:
+  level:
+    root: info
+    top.kingworker: debug
+  file:
+    path: log/blog-dev.log
+
+mybatis:
+  configuration:
+# 开启自动驼峰
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+
+pagehelper:
+  helper-dialect: mysql
+#  参数合理化 就是保证page大小合理
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+auth:
+  github:
+    clientId: yourClientId
+    clientSecret: yourClientSecret
+  qq:
+    clientId: yourClientId
+    clientSecret: yourClientSecret
+    redirectURI: yourCallbackURI
+

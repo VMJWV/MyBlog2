@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.kingworker.blog.mapper.QqTokenMapper" >
+  <resultMap id="BaseResultMap" type="top.kingworker.blog.entity.QqToken" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="open_id" property="openId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from qq_token
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.kingworker.blog.entity.QqToken" >
+    insert into qq_token (id, open_id, user_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.kingworker.blog.entity.QqToken" >
+    update qq_token
+    set open_id = #{openId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, open_id, user_id
+    from qq_token
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, open_id, user_id
+    from qq_token
+  </select>
+
+<!--  QqToken selectByOpenId(String openId);-->
+  <select id="selectByOpenId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, open_id, user_id
+    from qq_token
+    where open_id = #{openId}
+  </select>
+
+<!--  int deleteByUserId(Integer userId);-->
+  <delete id="deleteByUserId" parameterType="java.lang.Integer" >
+    delete from qq_token
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+</mapper>

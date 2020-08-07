@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMJWV's Blog</title>
+    <script src="../static/js/jquery/2.0.0/jquery.min.js" th:src="@{/js/jquery/2.0.0/jquery.min.js}"></script>
+    <link href="../static/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet"
+          th:href="@{/css/bootstrap/3.3.6/bootstrap.min.css}">
+    <script src="../static/js/bootstrap/3.3.6/bootstrap.min.js"
+            th:src="@{/js/bootstrap/3.3.6/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+
+<body>
+<!--搜索框-->
+<div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="search">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">搜索</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" placeholder="请输入关键字" id="condition">
+                <div class="list-group" style="margin-top: 10px" id="group">
+                    <button type="button" class="list-group-item">输入关键字来开始查找</button>
+                </div>
+                <div class="text-center">
+                    <nav aria-label="Page navigation pagination-sm">
+                        <ul class="pagination" id="searchNav">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--搜索框-->
+<nav th:replace="component :: top-nav(1)"></nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <!-- 文章区域 -->
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-size: 20px;color: #00B5AD;">
+                    <div>
+                        <span class="glyphicon glyphicon-th mid_icon"></span>
+                        <span>共
+                            <span style="color: #F2711C;" th:text="${pageInfo.getTotal()}"></span>
+                            篇
+                        </span>
+                        <button class="btn btn-primary btn-sm" style="background: #07B7AF;float: right"
+                                data-toggle="modal" data-target="#search">
+                            <span class="glyphicon glyphicon-search"></span>
+                            搜索
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <h1 th:if="${articles.size() == 0}" class="text-center">还没有任何文章</h1>
+                    <!-- 这个是一个文章块 -->
+                    <div class="col-md-12 article" th:each="article,index: ${articles}"
+                         th:onclick="'showArticle(' + ${article.id} +')'">
+                        <div class="col-md-8">
+                            <div>
+                                <!-- 标题 -->
+                                <h3><b th:text="${article.title}"></b><b th:if="${article.top}"
+                                                                         style="color:red">[顶置]</b></h3>
+                                <!-- 简介 -->
+                                <p class="article_info" th:text="${article.description}">
+                                </p>
+                                <div class="article_others">
+                                    <p>
+                                        <span class="glyphicon glyphicon-open" style="color: darkslategray"></span>
+                                        <span class="margin_right writer" th:text="${article.writer}"></span>
+                                        <span class="glyphicon glyphicon-calendar" style="color: royalblue"></span>
+                                        <span class="margin_right"
+                                              th:text="${#dates.format(article.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                        <span class="glyphicon glyphicon-fire" style="color: orangered"></span>
+                                        <span class="margin_right" th:text="${viewCounts.get(index.index)}"></span>
+                                    </p>
+                                </div>
+                                <div class="article_labels">
+                                        <span th:each="label,index : ${article.labels}">
+                                            <span class="label" th:text="${label.labelName}"
+                                                  th:style="'background:'+${label.labelColor}">
+                                            </span>
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <a th:href="@{'/article/'+${article.id}}" class="thumbnail">
+                                <img th:src="@{${article.pictureUrl}}">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 文章块到这里结束 -->
+                    <!-- 导航条 -->
+                    <div class="col-md-12 text-center">
+                        <nav class="text-center">
+                            <ul class="pagination">
+                                <li th:classappend="${!pageInfo.hasPreviousPage} ? 'disabled' : ''">
+
+                                    <a aria-label="Previous" th:if="${pageInfo.hasPreviousPage}"
+                                       th:href="@{/index(pageNum=${pageInfo.prePage})}">
+                                        <span aria-hidden="true">«</span>
+                                    </a>
+                                    <a aria-label="Previous" th:if="${!pageInfo.hasPreviousPage}"
+                                       href="javascript:void(0);">
+                                        <span aria-hidden="true">«</span>
+                                    </a>
+                                </li>
+                                <li th:each="num : ${pageInfo.getNavigatepageNums()}"
+                                    th:classappend="${num == pageInfo.pageNum ? 'active' : ''}">
+                                    <a href="#" th:text="${num}" th:href="@{/index(pageNum=${num})}"></a>
+                                </li>
+                                <li th:classappend="${!pageInfo.hasNextPage} ? 'disabled' : ''">
+                                    <a aria-label="Next" th:if="${pageInfo.hasNextPage}"
+                                       th:href="@{/index(pageNum=${pageInfo.nextPage})}">
+                                        <span aria-hidden="true">»</span>
+                                    </a>
+                                    <a aria-label="Next" th:if="${!pageInfo.hasNextPage}" href="javascript:void(0);">
+                                        <span aria-hidden="true">»</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- 导航条到这里结束 -->
+                </div>
+            </div>
+        </div>
+        <!-- 右侧区域开始 -->
+        <div class="col-md-3">
+            <shiro:guest>
+                <!-- 登录框开始 -->
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title right_pannel">
+                            <div>
+                                <span class="glyphicon glyphicon-star color_blue"></span>
+                                <span>登录</span>
+                            </div>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div th:replace="component::login"></div>
+                    </div>
+                </div>
+            </shiro:guest>
+            <!-- 登录框结束 -->
+            <!--个人信息开始-->
+            <shiro:user>
+                <div class="panel panel-primary" th:if="${profile != null}">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">详细信息</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-xs-12">
+                            <img src="../static/images/avatar.jpg" alt=""
+                                 class="img-responsive center-block img-rounded"
+                                 style="height: 150px" th:src="@{{url}(url=${profile.avatar})}">
+                        </div>
+                        <div class="col-xs-12 text-center">
+                            <h4 th:text="${profile.nickname}"></h4>
+                            <h5 th:text="${profile.slogan == null || profile.slogan == '' ? '这个人很懒,没有留下任何签名' : profile.slogan}"></h5>
+                            <button class="btn btn-primary" type="button" style="margin-right: 5px">
+                                作者文章数<span class="badge" style="margin-left: 5px"
+                                           th:text="${profile.articleCount}"></span>
+                            </button>
+                            <p style="margin-top: 8px">加入时间:<span
+                                    th:text="${#dates.format(profile.createTime,'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                            <p style="margin-top: 5px">
+                                <img src="../static/images/email.svg" th:src="@{/images/email1.svg}">
+                                <span th:text="${profile.email == null ? '这个人还没留下邮箱' : profile.email}"></span>
+                            </p>
+                            <p style="margin-top: 5px">
+                                <img src="../static/images/github.svg" th:src="@{/images/github.svg}">
+                                <a th:text="${profile.repositoryUrl == null ? '这个人还没留下仓库地址' : profile.repositoryUrl}"
+                                   th:href="${profile.repositoryUrl == null ? 'javascript:void(0)' : profile.getRepositoryUrl()}"
+                                   style="font-size: 11px"></a>
+                            </p>
+                            <p style="margin-top: 5px;">仅本人可见 需要修改请前往个人中心</p>
+                        </div>
+                    </div>
+                </div>
+            </shiro:user>
+            <!--个人信息结束-->
+            <!-- 热门标签展示 -->
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title right_pannel">
+                        <div>
+                            <span class="glyphicon glyphicon-tag mid1_icon color_blue"></span>
+                            <span>标签</span>
+                        </div>
+                    </h3>
+                </div>
+                <table class="table table-hover border" style="font-size: 16px">
+                    <tr th:each="label : ${hotLabels}"
+                        th:onclick="'window.location.href=\'/hotlabels?labelId=' + ${label.id} + '\''">
+                        <td><span class="label" th:text="${label.labelName}"
+                                  th:style="'background:'+${label.labelColor}"></span></td>
+                        <td class="right">
+                            <span class="badge color2" th:text="${label.count}"></span>
+                        </td>
+                    </tr>
+                    <tr onclick="window.location.href='/hotlabels'">
+                        <td><span class="label label-danger">more</span></td>
+                        <td class="right">
+                            <span class="badge color2">&gt;&gt;</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- 热门标签结束 -->
+            <!-- 最新推荐开始 -->
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title right_pannel">
+                        <div>
+                            <span class="glyphicon glyphicon-thumbs-up mid1_icon color_blue"></span>
+                            <span>最新推荐</span>
+                        </div>
+                    </h3>
+                </div>
+                <table class="table">
+                    <tr th:each="hotArticle : ${hotArticles}">
+                        <td><a th:href="@{/article/{id}(id = ${hotArticle.id})}" th:text="${hotArticle.title}"></a></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- 最新推荐结束 -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title right_pannel">
+                        <div>
+                            <span class="glyphicon glyphicon-globe	mid1_icon color_blue"></span>
+                            <span>访问纪录</span>
+                        </div>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center col-xs-10 col-xs-offset-1">
+                        <button class="btn btn-info col-xs-12" type="button">
+                            今日访问量<span class="badge" style="margin-left: 3px" th:text="${todayVisitCount}"></span>
+                        </button>
+                        <button class="btn btn-success col-xs-12" type="button" style="margin-top: 20px">
+                            历史访问量<span class="badge" style="margin-left: 3px" th:text="${sumVisitCount}"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧区域结束 -->
+    </div>
+    <!-- 一行结束 -->
+</div>
+<footer th:replace="component :: footer"></footer>
+<script>
+    function showArticle(val) {
+        var href = "/article/" + val;
+        window.location.href = href;
+    }
+
+    function searchArticle(pageNum, condition) {
+        $.ajax({
+            type: "post",
+            url: "/article/search",
+            data: {
+                "pageNum": pageNum,
+                "condition": condition
+            },
+            success: function (data) {
+                var group = $("#group");
+                group.empty();
+                if (data.total == 0) {
+                    group.append('<button type="button" class="list-group-item">没有对应关键字文章</button>');
+                } else {
+                    for (let val of data.list) {
+                        var item = '<button type="button" class="list-group-item" ' +
+                            'onclick = "window.location.href = \'/article/' + val.id + '\'" >' +
+                            '<span style="font-size: 20px">' + val.title + '</span>' +
+                            '<br>作者:' + val.writer + ' Time:' + val.createTime + '</button>';
+                        group.append(item);
+                    }
+                    var searchNav = $("#searchNav");
+                    searchNav.empty();
+                    for (let num of data.navigatepageNums) {
+                        if (num == data.pageNum) {
+                            searchNav.append('<li class="active"><a href="javascript:searchArticle(' + num + ',' + '\'' + condition + '\'' + ')">' + num + '</a></li>')
+                        } else {
+                            searchNav.append('<li><a href="javascript:searchArticle(' + num + ',' + '\'' + condition + '\'' + ')">' + num + '</a></li>')
+                        }
+                    }
+                }
+            },
+            error: function () {
+                alert("网络连接失败");
+            }
+        });
+    }
+
+    $(function () {
+        $("#condition").bind("input", function () {
+            searchArticle(1, $("#condition").val());
+        });
+    });
+</script>
+</body>
+
+</html>

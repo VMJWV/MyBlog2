@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.kingworker.blog.mapper.VisitHistoryMapper" >
+  <resultMap id="BaseResultMap" type="top.kingworker.blog.entity.VisitHistory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="request_url" property="requestUrl" jdbcType="VARCHAR" />
+    <result column="classMethod" property="classmethod" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="visit_time" property="visitTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from visit_history
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.kingworker.blog.entity.VisitHistory" >
+    insert into visit_history (id, request_url, classMethod, 
+      ip, visit_time)
+    values (#{id,jdbcType=INTEGER}, #{requestUrl,jdbcType=VARCHAR}, #{classmethod,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR}, #{visitTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.kingworker.blog.entity.VisitHistory" >
+    update visit_history
+    set request_url = #{requestUrl,jdbcType=VARCHAR},
+      classMethod = #{classmethod,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      visit_time = #{visitTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, request_url, classMethod, ip, visit_time
+    from visit_history
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, request_url, classMethod, ip, visit_time
+    from visit_history
+    order by visit_time desc
+  </select>
+</mapper>

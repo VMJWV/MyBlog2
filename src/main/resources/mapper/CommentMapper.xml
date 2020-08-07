@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.kingworker.blog.mapper.CommentMapper">
+  <resultMap id="BaseResultMap" type="top.kingworker.blog.entity.Comment">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="left_time" jdbcType="TIMESTAMP" property="leftTime" />
+    <result column="article_id" jdbcType="INTEGER" property="articleId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="reply_name" jdbcType="VARCHAR" property="replyName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+
+    delete from comments
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.kingworker.blog.entity.Comment">
+    insert into comments (id, user_id, content,
+      left_time, article_id, parent_id, 
+      nickname,reply_name)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{leftTime,jdbcType=TIMESTAMP}, #{articleId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, 
+      #{nickname,jdbcType=VARCHAR},#{replyName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.kingworker.blog.entity.Comment">
+    update comments
+    set user_id = #{userId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      left_time = #{leftTime,jdbcType=TIMESTAMP},
+      article_id = #{articleId,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      reply_name = #{replyName}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, user_id, content, left_time, article_id, parent_id, nickname,reply_name
+    from comments
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, content, left_time, article_id, parent_id, nickname,reply_name
+    from comments
+    order by left_time desc
+  </select>
+
+<!--  List<Comment> selectUserArticleComments(@Param("articleId")Integer articleId,@Param("userId")Integer userId);-->
+  <select id="selectArticleComments" resultMap="BaseResultMap">
+    select id, user_id, content, left_time, article_id, parent_id, nickname,reply_name
+    from comments where article_id = #{articleId}
+    order by left_time desc
+  </select>
+  <select id="isUserArticle" resultType="java.lang.Integer">
+    select count(*) from articles
+    where user_id = #{userId} and id = #{articleId}
+  </select>
+
+  <resultMap id="ArticleComments" type="top.kingworker.blog.vo.ArticleComments">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="left_time" jdbcType="TIMESTAMP" property="leftTime" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="reply_name" jdbcType="VARCHAR" property="replyName" />
+    <association property="sonComments" column="{parentId = id,articleId = article_id}" select="findSon">
+    </association>
+    <association property="avatarUrl" column="{userId = user_id}" select="findAvatar"></association>
+  </resultMap>
+  <select id="findSon" resultMap="ArticleComments">
+    select id, user_id, content, left_time, article_id, parent_id, nickname,reply_name
+    from comments
+    where article_id = #{articleId} and parent_id = #{parentId}
+    order by left_time desc
+  </select>
+  <select id="findAvatar" resultType="java.lang.String">
+   SELECT avatar FROM `profiles` WHERE `profiles`.id = #{userId}
+  </select>
+<!--  List<ArticleComments> getArticleComments(Integer articleId);-->
+  <select id="getArticleComments" parameterType="java.lang.Integer" resultMap="ArticleComments">
+    select id, user_id, content, left_time, article_id, parent_id, nickname,reply_name
+    from comments
+    where article_id = #{articleId} and isnull(parent_id)
+    order by left_time desc
+  </select>
+</mapper>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.kingworker.blog.mapper.ArticleMapper" >
+  <resultMap id="BaseResultMap" type="top.kingworker.blog.entity.Article" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <result column="top" property="top" jdbcType="BIT" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="picture_url" property="pictureUrl"></result>
+  </resultMap>
+
+  <resultMap id="withLabelsMap" type="top.kingworker.blog.entity.Article" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <result column="top" property="top" jdbcType="BIT" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="picture_url" property="pictureUrl"></result>
+    <association property="labels" select="selectArticleLabels" column="{articleId = id}"
+                 javaType="java.util.List"></association>
+  </resultMap>
+
+  <resultMap id="ArticleDetail" type="top.kingworker.blog.vo.ArticleDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_edit_time" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="picture_url" property="pictureUrl"></result>
+    <association property="labels" select="selectArticleLabels" column="{articleId = id}"
+      javaType="java.util.List"></association>
+    <association property="writer" select="selectArticleWriter" column="{userId = user_id,articleId = id}"></association>
+  </resultMap>
+<!--  这是个子查询-->
+  <select id="selectArticleLabels" resultType="top.kingworker.blog.entity.Label">
+    select labels.id,labels.label_name,labels.label_color from labels,article_labels
+    where labels.id = article_labels.label_id and article_labels.article_id = #{articleId}
+  </select>
+  <select id="selectArticleWriter" resultType="java.lang.String">
+    select profiles.nickname from profiles,articles
+    where articles.user_id = profiles.id and articles.user_id = #{userId}
+    and articles.id = #{articleId}
+  </select>
+
+<!--  ArticleDetail queryArticleById(Integer id);-->
+  <select id="queryArticleById" resultMap="ArticleDetail" parameterType="java.lang.Integer" >
+    select id, title, create_time,last_edit_time,type,view_count,user_id,
+    content,picture_url
+    from articles
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <resultMap id="PageArticle" type="top.kingworker.blog.vo.PageArticle" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="picture_url" property="pictureUrl"></result>
+    <result column="description" property="description"></result>
+    <result column="top" property="top"></result>
+    <association property="labels" select="selectArticleLabels" column="{articleId = id}"
+                 javaType="java.util.List"></association>
+    <association property="writer" select="selectArticleWriter" column="{userId = user_id,articleId = id}"></association>
+  </resultMap>
+<!--  PageArticle selectPageArticleByUserId(int userId);-->
+ <select id="selectPageArticleByUserId" resultMap="PageArticle" parameterType="java.lang.Integer" >
+    select id, title, create_time,type,view_count,user_id,description,top,
+    picture_url
+    from articles
+    where user_id = #{userId}
+    order by top desc,create_time desc
+  </select>
+<!--  PageArticle selectPageArticle();-->
+<select id="selectPageArticle" resultMap="PageArticle" >
+    select id, title, create_time,type,view_count,user_id,description,top,
+    picture_url
+    from articles
+    order by top desc,create_time desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from articles
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.kingworker.blog.entity.Article" useGeneratedKeys="true" keyProperty="id">
+
+    insert into articles (id, title, create_time,
+      description, last_edit_time, top,
+      type, user_id, view_count,
+      content,picture_url)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{description,jdbcType=VARCHAR}, #{lastEditTime,jdbcType=TIMESTAMP}, #{top,jdbcType=BIT},
+      #{type,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER},
+      #{content,jdbcType=LONGVARCHAR},#{pictureUrl})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.kingworker.blog.entity.Article" >
+
+    update articles
+    set title = #{title,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      description = #{description,jdbcType=VARCHAR},
+      last_edit_time = #{lastEditTime,jdbcType=TIMESTAMP},
+      top = #{top,jdbcType=BIT},
+      type = #{type,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR},
+      picture_url = #{picture_url}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+    -->
+    select id, title, create_time, description, last_edit_time, top, type, user_id, view_count,
+    content,picture_url
+    from articles
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+    -->
+    select id, title, create_time, description, last_edit_time, top, type, user_id, view_count,
+    content,picture_url
+    from articles
+  </select>
+<!--  Article queryUserArticleById(@Param("id") Integer id, @Param("userId") Integer userId);-->
+  <select id="queryUserArticleById" resultMap="withLabelsMap" parameterType="java.lang.Integer" >
+    select id, title, create_time, description, last_edit_time, top, type, user_id, view_count,
+    content,picture_url
+    from articles
+    where id = #{id,jdbcType=INTEGER} and user_id = #{userId}
+  </select>
+
+  <update id="updateByPrimaryKeyUser" parameterType="top.kingworker.blog.entity.Article" >
+    update articles
+    set title = #{article.title,jdbcType=VARCHAR},
+    description = #{article.description,jdbcType=VARCHAR},
+    last_edit_time = #{article.lastEditTime,jdbcType=TIMESTAMP},
+    type = #{article.type,jdbcType=VARCHAR},
+    content = #{article.content,jdbcType=LONGVARCHAR},
+    picture_url = #{article.pictureUrl}
+    where id = #{article.id,jdbcType=INTEGER} and user_id = #{userId}
+  </update>
+<!--  int deleteArticleUser(@Param("article") Article article, @Param("userId") Integer userId);-->
+    <delete id="deleteArticleUser">
+      delete from articles
+      where id = #{articleId} and user_id = #{userId}
+    </delete>
+
+<!--  ArticleTitle getArticleTitle(Integer articleId);-->
+    <select id="getArticleTitle" resultType="top.kingworker.blog.vo.ArticleTitle">
+      select title,id from articles
+      where id = #{articleId}
+    </select>
+
+<!--  int setTop(boolean isTop,int articleId);-->
+    <update id="setTop">
+      update articles set
+      top = #{isTop}
+      where id = #{articleId}
+    </update>
+<!--  List<HotArticle> getHotArticles();-->
+    <select id="getHotArticles" resultType="top.kingworker.blog.vo.HotArticle">
+      select id,title from articles
+      order by view_count desc,top desc,create_time desc
+      limit 0,6
+    </select>
+
+<!--  List<SearchArticle> getSearchResult(String condition);-->
+    <select id="getSearchResult" resultType="top.kingworker.blog.vo.SearchArticle">
+     select articles.id id,title,articles.create_time,`profiles`.nickname writer from articles,profiles where title like CONCAT('%',#{condition},'%')
+     and profiles.id = articles.user_id
+    </select>
+
+  <select id="selectPageArticleByLabelId" resultMap="PageArticle" parameterType="java.lang.Integer" >
+    select articles.id, title, articles.create_time,type,view_count,user_id,description,top,
+    picture_url
+    from articles,article_labels
+    where articles.id = article_labels.article_id and article_labels.label_id = #{labelId}
+    order by top desc,create_time desc
+  </select>
+
+<!--      List<Integer> getArticleCreateYears();-->
+  <select id="getArticleCreateYears" resultType="java.lang.Integer">
+    select year(create_time) from articles
+    GROUP BY (year(create_time)) order by year(create_time) desc
+  </select>
+
+<!--  List<SearchArticle> getArticlesByYear(Integer year);-->
+  <select id="getArticlesByYear" resultType="top.kingworker.blog.vo.SearchArticle">
+    select articles.id id,title,
+    articles.create_time,`profiles`.nickname writer
+    from articles,profiles
+    where profiles.id = articles.user_id
+    and year(articles.create_time) = #{year}
+  </select>
+
+<!--  void addViewCount(Integer articleId);-->
+    <update id="addViewCount">
+      update articles set view_count = view_count + 1
+      where id = #{articleId}
+    </update>
+
+<!--  Integer getViewCountByArticleId(Integer articleId);-->
+    <select id="getViewCountByArticleId" resultType="java.lang.Integer">
+      select view_count from articles
+      where id = #{articleId}
+    </select>
+
+<!--  List<Integer> getViewCounts(List<Integer> articleIds);-->
+    <select id="getViewCounts" resultType="java.lang.Integer">
+      select view_count from articles
+      where id in
+      (
+      <if test="articleIds == null or articleIds.size() == 0">
+        -1
+      </if>
+      <foreach collection="articleIds" separator="," item="val">
+        #{val}
+      </foreach>
+      )
+      order by top desc,create_time desc
+    </select>
+</mapper>

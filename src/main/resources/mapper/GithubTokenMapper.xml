@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.kingworker.blog.mapper.GithubTokenMapper">
+  <resultMap id="BaseResultMap" type="top.kingworker.blog.entity.GithubToken">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="repository_url" jdbcType="VARCHAR" property="repositoryUrl" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+    delete from github_token
+    where user_id = #{userId}
+  </delete>
+  <insert id="insert" parameterType="top.kingworker.blog.entity.GithubToken">
+    insert into github_token ( open_id, repository_url,
+      user_id)
+    values (#{openId,jdbcType=VARCHAR}, #{repositoryUrl,jdbcType=VARCHAR},
+      #{userId,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="top.kingworker.blog.entity.GithubToken">
+    update github_token
+    set open_id = #{openId,jdbcType=VARCHAR},
+      repository_url = #{repositoryUrl,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select id,open_id, repository_url, user_id
+    from github_token
+    where open_id = #{token}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, open_id, repository_url, user_id
+    from github_token
+  </select>
+</mapper>

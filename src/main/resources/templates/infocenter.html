@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${profile.nickname + '的个人中心'}"></title>
+    <script src="../static/js/jquery/2.0.0/jquery.min.js" th:src="@{/js/jquery/2.0.0/jquery.min.js}"></script>
+    <link href="../static/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet"
+          th:href="@{/css/bootstrap/3.3.6/bootstrap.min.css}">
+    <script src="../static/js/bootstrap/3.3.6/bootstrap.min.js"
+            th:src="@{/js/bootstrap/3.3.6/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+
+<body>
+<nav th:replace="component :: top-nav(${visitWriterPage != null ? 4 : 5})"></nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 hidden-xs">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">个人中心背景</h3>
+                </div>
+                <div class="panel-body">
+                    <img src="../static/images/default-bg.jpg" alt=""
+                         class="img-responsive center-block" th:src="@{{url}(url = ${profile.background})}">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">详细信息</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-xs-12">
+                        <img src="../static/images/avatar.jpg" alt="" class="img-responsive center-block img-rounded"
+                             style="height: 150px" th:src="@{{url}(url=${profile.avatar})}">
+                    </div>
+                    <div class="col-xs-12 text-center">
+                        <h4 th:text="${profile.nickname}"></h4>
+                        <h5 th:text="${profile.slogan == null || profile.slogan == '' ? '这个人很懒,没有留下任何签名' : profile.slogan}"></h5>
+                        <button class="btn btn-primary" type="button" style="margin-right: 5px">
+                            作者文章数<span class="badge" style="margin-left: 5px" th:text="${profile.articleCount}"></span>
+                        </button>
+                        <p style="margin-top: 8px">加入时间:<span
+                                th:text="${#dates.format(profile.createTime,'yyyy-MM-dd HH:mm:ss')}"></span></p>
+                        <p style="margin-top: 5px">
+                            <img src="../static/images/email.svg" th:src="@{/images/email1.svg}">
+                            <span th:text="${profile.email == null ? '这个人还没留下邮箱' : profile.email}"></span>
+                        </p>
+                        <p style="margin-top: 5px">
+                            <img src="../static/images/github.svg" th:src="@{/images/github.svg}">
+                            <a th:text="${profile.repositoryUrl == null ? '这个人还没留下仓库地址' : profile.repositoryUrl}"
+                               th:href="${profile.repositoryUrl == null ? 'javascript:void(0)' : profile.getRepositoryUrl()}"
+                            style="font-size: 11px"></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-info" th:if="${profile.id == currentId}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">该面板仅自己可见</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-success" th:href="@{/profile/edit}">修改个人资料</a>
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="..." style="margin-top: 5px">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-info" th:if="${profile.email != null}" th:href="@{/localauth/query}">修改邮箱和密码</a>
+                            <a class="btn btn-info" th:if="${profile.email == null}" th:href="@{/localauth/new}">设置邮箱和密码</a>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px" class="col-xs-12 text-center">
+                        <img src="../static/images/github.svg" th:src="@{/images/github.svg}" style="width: 30px;height: 30px;">
+                        <button class="btn btn-default" th:if="${profile.repositoryUrl == null}">未绑定</button>
+                        <a class="btn btn-danger" th:if="${profile.repositoryUrl != null}" th:href="@{/github/unbind}">解绑</a>
+                    </div>
+                    <div style="margin-top: 10px" class="col-xs-12 text-center">
+                        <img src="../static/images/qq.svg" th:src="@{/images/qq.svg}" style="width: 30px;height: 30px">
+                        <button class="btn btn-default" th:if="${profile.qqTokenId == null}">未绑定</button>
+                        <a class="btn btn-danger" th:if="${profile.qqTokenId != null}" th:href="@{/qq/unbind}">解绑</a>
+                    </div>
+                    <p class="text-center" style="margin-top: 5px">使用第三方登录即可进行账号绑定</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="component :: footer"></footer>
+</body>
+</html>

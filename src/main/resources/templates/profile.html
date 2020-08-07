@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑个人档案</title>
+    <script src="../static/js/jquery/2.0.0/jquery.min.js" th:src="@{/js/jquery/2.0.0/jquery.min.js}"></script>
+    <link href="../static/css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet"
+          th:href="@{/css/bootstrap/3.3.6/bootstrap.min.css}">
+    <script src="../static/js/bootstrap/3.3.6/bootstrap.min.js"
+            th:src="@{/js/bootstrap/3.3.6/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<nav th:replace="component :: top-nav(-1)"></nav>
+<div class="container">
+    <div class="row col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">编辑个人档案</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" th:action="@{/profile/update}">
+                    <input type="hidden" name="id" th:value="${profile.id}">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label>编辑个人头像</label>
+                            <input type="text" class="form-control" id="avatar" name="avatar"
+                                   value="/images/default-bg.jpg" readonly="true" th:value="${profile.avatar}">
+                            <input type="file" id="avatarFile" style="margin: 10px;display: inline-block">
+                            <button style="display: inline-block" class="btn btn-info"
+                                    onclick="upload('avatarFile','avatar','avatarImage')"
+                                    type="button">点击上传
+                            </button>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 5px">
+                            <label>个人头像预览</label>
+                            <img src="../static/images/default-avatar.svg" class="img-responsive" style="height: 100px"
+                                 th:src="@{{url}(url=${profile.avatar})}" id="avatarImage">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <label for="pictureUrl">个人中心展示的图片</label>
+                        <input type="text" class="form-control" id="pictureUrl" name="background"
+                               value="/images/default-bg.jpg" readonly="true" th:value="${profile.background}">
+                        <input type="file" id="file" style="margin: 10px;display: inline-block">
+                        <button style="display: inline-block" class="btn btn-info"
+                                onclick="upload('file','pictureUrl','picture')"
+                                type="button">点击上传
+                        </button>
+                        <div style="margin-top: 5px">
+                            <img src="../static/images/default-bg.jpg" alt=""
+                                 th:src="@{{url}(url=${profile.background})}"
+                                 class="center-block img-responsive" id="picture" style="height: 300px;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="slogan">个性签名</label>
+                        <textarea type="text" class="form-control" id="slogan" name="slogan" rows="3"
+                                  style="resize: none" th:text="${profile.slogan}"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname">用户名</label>
+                        <input type="text" class="form-control" id="nickname" name="nickname"
+                               th:value="${profile.nickname}">
+                    </div>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-primary">确定更改</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="component ::footer"></footer>
+<script>
+    function upload(file, picture, input) {
+        var formData = new FormData();
+        formData.append('editormd-image-file', $('#' + file)[0].files[0]);
+        if (typeof (file) == undefined) {
+            alert("你还没选择文件");
+            return;
+        }
+        $.ajax({
+            url: '/picture/add',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.success == 1) {
+                    $("#" + input).prop("src", data.url);
+                    $("#" + picture).val(data.url);
+                } else {
+                    alert("文件上传失败");
+                }
+            },
+            error: function () {
+                alert("文件上传失败");
+            }
+        })
+    }
+</script>
+</body>
+</html>

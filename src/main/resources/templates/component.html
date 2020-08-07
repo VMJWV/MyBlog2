@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- 导航开始 -->
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" th:fragment="top-nav(n)">
+    <div class="container-fluid">
+        <!-- 导航需要的组件 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- band区域 -->
+            <a class="navbar-brand" th:href="@{/index}"><span class="color_aqua">VMJWV's Blog</span></a>
+        </div>
+        <!-- 导航需要的组件结束 -->
+        <!-- 导航左侧部分开始 -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li th:classappend="${n == 1} ? 'active' : ''">
+                    <a th:href="@{/}">
+                        <span class="glyphicon glyphicon-home small_icon"></span>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 2} ? 'active' : ''">
+                    <a th:href="@{/archives}">
+                        <span class="glyphicon glyphicon-bookmark small_icon"></span>
+                        <span>归档</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 3} ? 'active' : ''">
+                    <a href="#" th:href="@{/hotlabels}">
+                        <span class="glyphicon glyphicon-tag small_icon"></span>
+                        <span>标签</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 4} ? 'active' : ''">
+                    <a th:href="@{/profile/1(flag = 1)}">
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span>关于作者</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- 导航左侧部分结束 -->
+            <!-- 导航右侧部分开始 这里针对登录之前-->
+            <ul class="nav navbar-nav navbar-right" shiro:notAuthenticated>
+                <li th:classappend="${n == 5} ? 'active' : ''">
+                    <a href="#" th:href="@{/login}">
+                        <span class="glyphicon glyphicon-user small_icon"></span>
+                        <span>登录</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 6} ? 'active' : ''">
+                    <a href="#" th:href="@{/register}">
+                        <span class="glyphicon glyphicon-plus-sign small_icon"></span>
+                        <span>注册</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- 导航右侧部分结束 -->
+            <!--导航的右侧部分开始 这里针对登录过后-->
+            <ul class="nav navbar-nav navbar-right" shiro:user>
+                <li th:classappend="${n == 5} ? 'active' : ''">
+                    <a href="#" th:href="@{/profile/query}">
+                        <span class="glyphicon glyphicon-user small_icon"></span>
+                        <span>个人中心</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 6} ? 'active' : ''">
+                    <a href="#" th:href="@{/article/query}">
+                        <span class="glyphicon glyphicon-folder-open small_icon"></span>
+                        <span>文章管理</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 7} ? 'active' : ''">
+                    <a href="#" th:href="@{/label/query}">
+                        <span class="glyphicon glyphicon-tasks small_icon"></span>
+                        <span>标签管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" th:href="@{/admin/index}" shiro:hasPermission="manage">
+                        <span class="glyphicon glyphicon-equalizer small_icon"></span>
+                        <span>网站后台管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" th:href="@{/logout}">
+                        <span class="glyphicon glyphicon-remove-circle small_icon"></span>
+                        <span>登出</span>
+                    </a>
+                </li>
+            </ul>
+            <!--导航的右侧部分结束 这里针对登录过后-->
+        </div>
+    </div>
+</nav>
+<!-- 导航结束 -->
+
+<!-- 页脚开始 -->
+<footer class="footer" id="footer" th:fragment="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h3>VMJWV</h3>
+                <p>Try to be better</p>
+                <a class="btn btn-success" th:href="@{profile/1}">About Me</a>
+            </div>
+            <div class="col-md-4">
+                <h3>添加QQ好友</h3>
+                <img src="" alt="" th:src="@{/images/AddQRcode.png}" class="img-responsive img-rounded" id="my-qrcode">
+            </div>
+            <div class="col-md-4">
+                <h3>与我相关</h3>
+                <p>
+                    <img src="../static/images/github.svg" th:src="@{/images/github.svg}">
+                    <a href="https://github.com/VMJWV">Repository</a>
+                </p>
+                <p>
+                    <img src="../static/images/qq.svg" th:src="@{/images/qq.svg}">
+                    <span>649685018</span>
+                </p>
+                <p>
+                    <img src="../static/images/email.svg" th:src="@{/images/email.svg}">
+                    <span>649685018@qq.com</span>
+                </p>
+            </div>
+            <div class="col-xs-12" id="copyright">
+                <p>ICP备案：鄂ICP备20000535号</p>
+                <p>Copyright © 2019-2020 Designed by VMJWV</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- 页脚结束 -->
+
+<!-- 添加新标签模态框 -->
+<div class="modal fade" id="addLabel" tabindex="-1" role="dialog" aria-labelledby="addLabelTitle"
+     aria-hidden="true" th:fragment="addLabel" style="z-index: 5000">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="addLabelTitle">上传新标签</h4>
+            </div>
+            <div style="margin: 30px;">
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="color">点击输入框选择颜色</label>
+                        <input type="text" class="form-control" id="color" onchange="watchLabel()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="labelName">输入标签名</label>
+                        <input type="text" class="form-control" id="labelName" value="default"
+                               oninput="watchLabel()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label style="margin-bottom: 10px;">标签样式预览</label><br>
+                        <span class="label" style="font-size: 20px;margin-top:20px;margin:10px;"
+                              id="previewLabel">default</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateLabel()" id="update" style="display: none">
+                    更新标签
+                </button>
+                <button type="button" class="btn btn-primary" onclick="uploadLabel()" id="upload" func="2">上传标签</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 添加新标签模态框结束 -->
+
+<!-- 选择标签的模态框 -->
+<div class="modal fade" id="selectLabels" tabindex="-1" role="dialog" aria-labelledby="selectLabel"
+     aria-hidden="true" th:fragment="selectLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="selectLabel">选择您的标签</h4>
+            </div>
+            <div style="font-size: 20px;margin: 20px;" class="text-center" id="labels">
+            </div>
+            <!-- 分页开始 -->
+            <nav aria-label="Page navigation" class="text-center">
+                <ul class="pagination" id="navUl">
+                    <li><a href="javascript:getLabels(2,5)">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                </ul>
+            </nav>
+            <!-- 分页结束 -->
+            <div class="text-center" style="margin-bottom: 10px;">
+                <button class="btn btn-primary text-center" data-toggle="modal"
+                        data-target="#addLabel">上传新标签
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 选择标签的模态框结束-->
+
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" th:fragment="admin-nav(n)">
+    <div class="container-fluid">
+        <!-- 导航需要的组件 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- band区域 -->
+            <a class="navbar-brand" href="#"><span class="color_aqua">VMJWV's Blog</span></a>
+        </div>
+        <!-- 导航需要的组件结束 -->
+        <!-- 导航左侧部分开始 -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+            <ul class="nav navbar-nav">
+                <li th:classappend="${n == 0} ? 'active' : ''">
+                    <a th:href="@{/}">
+                        <span class="glyphicon glyphicon-home small_icon"></span>
+                        <span>网站首页</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 1} ? 'active' : ''">
+                    <a th:href="@{/admin/index}">
+                        <span class="glyphicon glyphicon-home small_icon"></span>
+                        <span>历史访问纪录</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 2} ? 'active' : ''">
+                    <a href="#" th:href="@{/admin/article/query}">
+                        <span class="glyphicon glyphicon-bookmark small_icon"></span>
+                        <span>所有文章管理</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 3} ? 'active' : ''">
+                    <a href="#" th:href="@{/admin/label/query}">
+                        <span class="glyphicon glyphicon-tag small_icon"></span>
+                        <span>所有标签管理</span>
+                    </a>
+                </li>
+                <li th:classappend="${n == 4} ? 'active' : ''">
+                    <a href="#" th:href="@{/admin/profile/query}">
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span>用户权限管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" th:href="@{/logout}">
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span>登出</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- 导航左侧部分结束 -->
+        </div>
+    </div>
+</nav>
+<div th:fragment="login">
+    <form method="post" th:action="@{/user/login}">
+        <div class="form-group">
+            <label for="loginName">邮箱或者账户名</label>
+            <input type="text" class="form-control" id="loginName" name="loginName"
+                   placeholder="username/email">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password" name="password"
+                   placeholder="Password">
+        </div>
+        <div class="checkbox">
+            <label for="remember">
+                <input type="checkbox" name="remember" id="remember" value="true"> 记住我
+            </label>
+        </div>
+        <div class="btn-group btn-group-justified" role="group" style="margin-bottom: 5px">
+            <div class="btn-group" role="group">
+                <button type="submit" class="btn btn-success">登录</button>
+            </div>
+        </div>
+        <div class="btn-group btn-group-justified" role="group" style="margin-bottom: 15px">
+            <div class="btn-group" role="group">
+                <a class="btn btn-info" th:href="@{/register}">注册</a>
+            </div>
+        </div>
+    </form>
+    <h4 class="text-center"><b>其他账号登录</b></h4>
+    <div class="col-xs-6 text-center" onclick="window.location.href='/qqLogin'">
+        <img src="../static/images/qq.svg" class="img-responsive center-block" th:src="@{/images/qq.svg}"
+             style="height: 60px;" >
+        <b>使用QQ账户登录</b>
+    </div>
+    <div class="col-xs-6 text-center" onclick="window.location.href='/githubLogin'">
+        <img src="../static/images/github.svg" class="img-responsive center-block" th:src="@{/images/github.svg}"
+             style="height: 60px;">
+        <b>使用Github账户登录</b>
+    </div>
+</div>
+</body>
+
+</html>

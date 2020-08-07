@@ -3,7 +3,9 @@
 
 于是重构了一个版本 从结果上来看这次更新的结果要比上一次好很多 但是做完也有点四不像 ajax的走ajax 模板渲染的走模板渲染
 
-现在看来最好的构建方式还是该使用Vue来做的
+现在看来最好的构建方式还是该使用Vue来做的  
+
+这次更新过后 博客变得**更快 更好看了 可提供的操作也更多了**
 
 
 
@@ -23,7 +25,7 @@
 ## 前端
 
 1. bootstrap + jquery 
-2. 代码高亮 [prism](https://github.com/PrismJS/prism) highlight js 其实也能够 但是highlight js的
+2. 代码高亮 [prism](https://github.com/PrismJS/prism) highlight js 其实也能够 但是highlight js的移动端展示实在让人难过
 3. markdown编辑器 [editormd  ](https://pandao.github.io/editor.md/) 
 4. 目录生成 katelog(https://github.com/KELEN/katelog) 
 5. 标签颜色选择 [Bootstrap Colorpicker](https://github.com/itsjavi/bootstrap-colorpicker)

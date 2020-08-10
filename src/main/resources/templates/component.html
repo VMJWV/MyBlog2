@@ -52,7 +52,7 @@
             </ul>
             <!-- 导航左侧部分结束 -->
             <!-- 导航右侧部分开始 这里针对登录之前-->
-            <ul class="nav navbar-nav navbar-right" shiro:notAuthenticated>
+            <ul class="nav navbar-nav navbar-right" shiro:guest>
                 <li th:classappend="${n == 5} ? 'active' : ''">
                     <a href="#" th:href="@{/login}">
                         <span class="glyphicon glyphicon-user small_icon"></span>

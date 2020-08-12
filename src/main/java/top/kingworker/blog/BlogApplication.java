@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //扫描所有的mapper
 @MapperScan("top.kingworker.blog.mapper")
+@EnableTransactionManagement 
 @SpringBootApplication
 public class BlogApplication {
 

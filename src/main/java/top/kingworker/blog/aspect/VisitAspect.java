@@ -60,9 +60,8 @@ public class VisitAspect {
             redisTemplate.opsForValue().set(ip,"exist",
                     calendar.getTimeInMillis()-currentDate.getTime(),TimeUnit.MILLISECONDS);
             visitRecordService.addToDayVisitCount(todayString);
-        }
-        //管理员的操作不要入库
-        if(!requestURL.contains("admin")) {
+            //只保存当天用户第一次访问的时候的访问纪录
+            //有Bug 当缓存清空的时候 又会在添加一次
             visitRecordService.insertVisitHistory(ip, requestURL,
                     classMethod.substring(classMethod.lastIndexOf("blog.") + 5), currentDate);
         }

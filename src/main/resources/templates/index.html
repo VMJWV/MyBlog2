@@ -84,7 +84,7 @@
                                         <span class="margin_right"
                                               th:text="${#dates.format(article.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
                                         <span class="glyphicon glyphicon-fire" style="color: orangered"></span>
-                                        <span class="margin_right" th:text="${viewCounts.get(index.index)}"></span>
+                                        <span class="margin_right" th:text="${article.viewCount}"></span>
                                     </p>
                                 </div>
                                 <div class="article_labels">

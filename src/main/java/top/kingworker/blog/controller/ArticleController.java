@@ -43,9 +43,6 @@ public class ArticleController {
         ModelAndView modelAndView = new ModelAndView("index");
         PageInfo<PageArticle> pageInfo = articleService.selectPageArticle(pageNum, 6);
         List<PageArticle> list = pageInfo.getList();
-        List<Integer> articleIds = new ArrayList<>();
-        list.forEach(val -> articleIds.add(val.getId()));
-        List<Integer> viewCounts = articleService.getViewCounts(articleIds);
         modelAndView.addObject("pageInfo", pageInfo);
         modelAndView.addObject("articles", list);
         PageInfo<HotLabel> hotLabels = articleService.getHotLabels(1);
@@ -55,7 +52,6 @@ public class ArticleController {
         if(principal != null) {
             modelAndView.addObject("profile", profileService.getProfileById((Integer) principal));
         }
-        modelAndView.addObject("viewCounts",viewCounts);
         modelAndView.addObject("todayVisitCount",visitRecordService.toDayVisitCount());
         modelAndView.addObject("sumVisitCount",visitRecordService.sumVisitCount());
         return modelAndView;

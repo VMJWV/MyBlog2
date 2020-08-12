@@ -94,7 +94,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "pageArticles",unless="#result == null")
     public PageInfo<PageArticle> selectPageArticle(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<PageArticle> pageArticle = articleMapper.selectPageArticle();
